@@ -1,6 +1,6 @@
 # CS-541-Deep_Learning
 
-| Deep Learning Resources |
+| Deep Learning Resources: |
 |-|
 | [Neural Network From Scratch](https://drscotthawley.github.io/blog/2019/01/30/My-First-Neural-Network.html) |
 | [Little textbook on Neural Networks](https://minitorch.github.io/) |
@@ -38,7 +38,7 @@
 | [Machine Learning for Software Engineers](https://github.com/ZuzooVn/machine-learning-for-software-engineers) |
 
 
-| Data Science Stuff: |
+| Data Science Resources: |
 |-|
 | [Understanding Bagging & Boosting in Machine Learning](https://datamahadev.com/understanding-bagging-boosting-in-machine-learning/) |
 | [Pandas Practice](https://pandaspractice.com/) |

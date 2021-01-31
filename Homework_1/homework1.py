@@ -4,46 +4,62 @@ def problem_1a (A, B):
     return A + B
 
 def problem_1b (A, B, C):
-    return ...
+    return (np.dot(A, B)) - C
 
 def problem_1c (A, B, C):
-    return ...
+    return (A * B) + (np.transpose(C))
 
 def problem_1d (x, y):
-    return ...
+    return np.dot(np.transpose(x), y)
 
 def problem_1e (A):
-    return ...
+    return np.zeros(A)
 
 def problem_1f (A, x):
-    return ...
+    return np.linalg.solve(A, x)
 
 def problem_1g (A, x):
-    return ...
+    return np.linalg.solve(x, A)
 
 def problem_1h (A, alpha):
-    return ...
+    num_rows, num_cols = A.shape
+    return A + (np.eye(num_rows) * alpha)
 
 def problem_1i (A, i):
-    return ...
+    return np.sum(A[i, 1::2])
 
 def problem_1j (A, c, d):
-    return ...
+    b = np.where((c <= A or A <= d))
+    return np.mean(A[b])
 
 def problem_1k (A, k):
-    return ...
+    eigen_value, eigen_vector = np.linalg.eig(A)
+    descen_arr_indices = eigen_value[::-1].argsort()
+    return eigen_vector[:,descen_arr_indices[:,:k]]
 
 def problem_1l (x, k, m, s):
-    return ...
+    x_row, x_col  = x.shape()
+    m_z =  m * np.ones(x.shape)
+    s_i = s * np.eye(x_row, k)
+    n_k = np.random.multivariatenormal(x + m_z, s_i)
+    return n_k
 
 def problem_1m (A):
-    return ...
+    return np.random.shuffle(A)
 
 def problem_1n (x):
-    return ...
+    x_bar = np.mean(x)
+    sigma = np.std(x)
+    y_vec = []
+    for i in range(len(x)):
+        x_i = x[i]
+        y_i =  (x_i - x_bar) / sigma 
+        y_vec.append(y_i)
+
+    return y_vec
 
 def problem_1o (x, k):
-    return ...
+    return np.repeat(np.atleast_2d(x),k)
 
 def problem_1p (X):
     return ...

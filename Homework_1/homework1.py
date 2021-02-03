@@ -70,13 +70,26 @@ def problem_1n (x):
 def problem_1o (x, k):
     return np.repeat(np.atleast_2d(x),k)
 
+#correct
 def problem_1p (X):
-    return ...
+    m, n = np.shape(X)
+    three_dim_mat = np.repeat(np.atleast_3d(X), n, axis=2)
+    swap_mat = np.swapaxes(three_dim_mat, 1, 2)
+    D = np.sqrt(np.sum(np.square(three_dim_mat-swap_mat), axis=0))
+    return D
 
 def linear_regression (X_tr, y_tr):
-    ...
+    X_t = np.transpose(X_tr)
+    X_y = np.matmul(X_tr, y_tr)
+    X_XT = np.matmul(X_t, X_tr)
+    return np.linalg.solve(X_XT, X_y)
 
-def train_age_regressor ():
+def mean_square_error(y_hat, y):
+    dist_diff = np.square(y_hat-y)
+    err = np.mean(dist_diff)
+    return err
+
+def train_age_regressor():
     # Load data
     X_tr = np.reshape(np.load("age_regression_Xtr.npy"), (-1, 48*48))
     ytr = np.load("age_regression_ytr.npy")
@@ -84,6 +97,10 @@ def train_age_regressor ():
     yte = np.load("age_regression_yte.npy")
 
     w = linear_regression(X_tr, ytr)
+    y_hat_tr = np.matmul(X_tr, w)
+    y_hat_te = np.matmul(X_te, w)
 
-    # Report fMSE cost on the training and testing data (separately)
-    # ...
+    train = mean_square_error(y_hat_tr, ytr)
+    test = mean_square_error(y_hat_te, yte)
+
+    return train, test

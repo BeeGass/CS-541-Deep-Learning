@@ -44,3 +44,7 @@
 | [Pandas Practice](https://pandaspractice.com/) |
 | [The Open Source Data Science Masters](http://datasciencemasters.org/) |
 | [Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php) |
+
+
+## Assignment 1
+If you dont want to download the file you can run it [HERE](https://mybinder.org/v2/gh/BeeGassy/CS-541-Deep_Learning/1c08387ef42c6c88f8697bac70c8983823cfd64a) in your browser

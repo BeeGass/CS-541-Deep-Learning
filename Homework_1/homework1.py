@@ -1,5 +1,14 @@
 import numpy as np
 
+var_a = np.array([5, 2, 1, 6, 8, 0, 2, 5, 8])
+A_var = var_a.reshape((3, 3))
+
+var_b = np.array([5, 3, 2, 7, 9, 1, 3, 6, 9])
+B_var = var_b.reshape((3, 3))
+
+var_c = np.array([6, 3, 2, 8, 0, 2, 4, 7, 0])
+C_var = var_c.reshape((3, 3))
+
 def problem_1a (A, B):
     return A + B
 

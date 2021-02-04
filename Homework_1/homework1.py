@@ -13,13 +13,13 @@ def problem_1a (A, B):
     return A + B
 
 def problem_1b (A, B, C):
-    return (np.dot(A, B)) - C
+    return (np.dot(A, B) - C)
 
 def problem_1c (A, B, C):
-    return (A * B) + (np.transpose(C))
+    return ((A * B) + C.T)
 
 def problem_1d (x, y):
-    return np.dot(np.transpose(x), y)
+    return np.inner(x, y)
 
 def problem_1e (A):
     return np.zeros(A)

@@ -1,13 +1,51 @@
 import numpy as np
+A_var = np.array([
+    [5, 2, 1],
+    [6, 8, 0],
+    [2, 5, 8]
+    ])
+B_var = np.array([
+    [5, 3, 2],
+    [7, 9, 1],
+    [3, 6, 9]
+    ])
+C_var = np.array([
+    [6, 3, 2],
+    [8, 0, 2],
+    [4, 7, 0]
+    ])
 
-var_a = np.array([5, 2, 1, 6, 8, 0, 2, 5, 8])
-A_var = var_a.reshape((3, 3))
 
-var_b = np.array([5, 3, 2, 7, 9, 1, 3, 6, 9])
-B_var = var_b.reshape((3, 3))
+x = np.array([5, 2, 1, 6, 8])
 
-var_c = np.array([6, 3, 2, 8, 0, 2, 4, 7, 0])
-C_var = var_c.reshape((3, 3))
+x_1 = np.array([[5, 2, 1], 
+                [6, 8, 8]])
+
+x_2 = np.array([[5, 2, 1], 
+                [6, 8, 8]])
+
+x_3 = np.array([5, 2, 1])
+
+y = np.array([5, 3, 2, 7, 9])
+
+y_1 = np.array([[5, 3, 2], 
+                [7, 9, 4]])
+
+y_2 = np.array([[5, 3, 2], 
+                [7, 9, 4]])
+
+matrix = np.array([
+    [1, 2, 0],
+    [2, 2, 0],
+    [3, 2, 0],
+    [4, 2, 0]
+    ])
+
+matrix_two = np.array([
+    [4, 3, 2, 1],
+    [2, 2, 2, 2],
+    [0, 0, 0, 0]
+    ])
 
 def problem_1a (A, B):
     return A + B
@@ -22,39 +60,38 @@ def problem_1d (x, y):
     return np.inner(x, y)
 
 def problem_1e (A):
-    return np.zeros(A)
+    return np.zeros(np.shape(A_var))
 
 def problem_1f (A, x):
     return np.linalg.solve(A, x)
 
 def problem_1g (A, x):
-    return np.linalg.solve(x, A)
+    return (np.linalg.solve(A.T, x.T)).T
 
 def problem_1h (A, alpha):
     num_rows, num_cols = A.shape
+    print("This is A \n", A)
+    print("\nThis is I \n", np.eye(num_rows))
     return A + (np.eye(num_rows) * alpha)
 
 def problem_1i (A, i):
-    return np.sum(A[i, 1::2])
+    return np.sum(A[i, ::2])
 
 def problem_1j (A, c, d):
-    b = np.where((c <= A or A <= d))
+    b = np.where(np.logical_and(c <= A, A <= d))
     return np.mean(A[b])
 
 def problem_1k (A, k):
-    eigen_value, eigen_vector = np.linalg.eig(A)
-    descen_arr_indices = eigen_value[::-1].argsort()
-    return eigen_vector[:,descen_arr_indices[:,:k]]
+    eigen_value, eigen_vector = np.linalg.eig(A) #get eigenvalues and vectors
+    descen_arr_indices = eigen_value.argsort() #sort indices in descending order
+    matching_indices = descen_arr_indices[len(descen_arr_indices) - k:]
+    return eigen_vector[:,matching_indices] #use indices to get respective eigen vectors 
 
 def problem_1l (x, k, m, s):
-    x_row, x_col  = x.shape()
-    m_z =  m * np.ones(x.shape)
-    s_i = s * np.eye(x_row, k)
-    n_k = np.random.multivariatenormal(x + m_z, s_i)
-    return n_k
+    return np.random.multivariatenormal(x+m, np.eye(x.shape[0]) * s, k).T
 
 def problem_1m (A):
-    return np.random.shuffle(A)
+    return np.random.permutation(A)
 
 def problem_1n (x):
     x_bar = np.mean(x)
@@ -70,7 +107,6 @@ def problem_1n (x):
 def problem_1o (x, k):
     return np.repeat(np.atleast_2d(x),k)
 
-#correct
 def problem_1p (X):
     m, n = np.shape(X)
     three_dim_mat = np.repeat(np.atleast_3d(X), n, axis=2)
@@ -79,8 +115,8 @@ def problem_1p (X):
     return D
 
 def linear_regression (X_tr, y_tr):
-    X_t = np.transpose(X_tr)
-    X_y = np.matmul(X_tr, y_tr)
+    X_t = X_tr.T
+    X_y = np.matmul(X_tr.T, y_tr)
     X_XT = np.matmul(X_t, X_tr)
     return np.linalg.solve(X_XT, X_y)
 

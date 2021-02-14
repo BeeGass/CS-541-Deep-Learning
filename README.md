@@ -1,7 +1,11 @@
 # CS-541-Deep_Learning
 Course Textbook: Deep Learning Book 
 
-Recommended Additional Textbook: Dive Into Deep Learning
+Recommended Additional Textbook: 
+ - Dive Into Deep Learning
+ - Pattern Recognition and Machine Learning
+
+
 
 | Deep Learning Resources: |
 |-|

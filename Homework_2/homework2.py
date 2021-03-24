@@ -151,11 +151,14 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
     current_cost = -1
     epochs_since_improved = 0
     writer = SummaryWriter()
+    current_step = 0
 
     for e in range(num_of_epochs - 1):
         shuffled_x, shuffled_y = unison_shuffled_copies(x, y)
 
-        for current_step, mini_batch_x, mini_batch_y in enumerate(batch_iterator(x, y, size_of_batch)):
+        for mini_batch_x, mini_batch_y in batch_iterator(x, y, size_of_batch):
+            current_step += 1
+
             y_hat = model(mini_batch_x, w, b)
 
             if reg_bool == True:
@@ -169,7 +172,7 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
 
             print("MSE: ", current_cost)
             print("Past MSE: ", past_cost)
-            writer.add_scalar("training_loss", current_cost, current_step * (e + 1))
+            writer.add_scalar("training_loss", current_cost, current_step)
 
         if (past_cost < current_cost): # if past cost remains to be lower than current cost, increment counter
             epoch_since_improved += 1
@@ -184,8 +187,6 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
             learning_rate /= 10
             past_cost = current_cost
             print("current cost is lower")
-
-    visualize_that_beh(history)
     
     return w, b
     
@@ -254,7 +255,7 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
     return loss
 
 def main():
-    print(train_age_regressor(num_of_epochs=300, size_of_batch=100, ttv_val=1, the_set=0, learning_rate=0.001, reg_bool=False))
+    print(train_age_regressor(num_of_epochs=300, size_of_batch=10, ttv_val=1, the_set=0, learning_rate=0.001, reg_bool=False))
 
 if __name__ == '__main__':
     main()

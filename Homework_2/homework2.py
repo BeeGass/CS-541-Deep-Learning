@@ -139,10 +139,10 @@ def visualize_that_beh(history: dict):
 
 def batch_iterator(x, y, size_of_batch):
     assert (len(x) == len(y))
-    p = np.random.permutation(size_of_batch)
+    p = np.random.permutation(x.shape[0])
     x_rand = x[p]
     y_rand = y[p]
-    for i in np.arange(0, x_rand.shape[0], size_of_batch):
+    for i in np.arange(0, x.shape[0], size_of_batch):
         yield x_rand[i:i + size_of_batch], y_rand[i:i + size_of_batch]
 
 

@@ -155,7 +155,6 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
     current_step = 0
 
     for e in range(num_of_epochs - 1):
-        shuffled_x, shuffled_y = unison_shuffled_copies(x, y)
 
         for mini_batch_x, mini_batch_y in batch_iterator(x, y, size_of_batch):
             current_step += 1
@@ -250,7 +249,7 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
 
 def main():
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    print(train_age_regressor(num_of_epochs=100, size_of_batch=500, ttv_val=1, the_set=0, learning_rate=0.01, reg_bool=False))
+    print(train_age_regressor(num_of_epochs=100, size_of_batch=10, ttv_val=1, the_set=0, learning_rate=0.01, reg_bool=False))
 
 if __name__ == '__main__':
     main()

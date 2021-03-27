@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -167,6 +168,12 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
             else:
                 current_cost = mean_square_error(y_hat, mini_batch_y)
 
+            if (past_cost > current_cost): # if past cost remains to be lower than current cost, increment counter
+                epoch_since_improved = 0 
+                learning_rate /= 10
+                past_cost = current_cost
+                print("current cost is lower")
+                
             
             w, b = gradient_descent(mini_batch_x, mini_batch_y, b, w, learning_rate, reg_bool)
 
@@ -174,19 +181,6 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
             print("Past MSE: ", past_cost)
             writer.add_scalar("training_loss", current_cost, current_step)
 
-        if (past_cost < current_cost): # if past cost remains to be lower than current cost, increment counter
-            epoch_since_improved += 1
-
-            # if epoch_since_improved >= 3:
-                #learning_rate /= 10 #learning rate decays if cost does not lower after 3 epochs 
-                #print("learning rate decayed")
-                #print("epochs since improved: ", epoch_since_improved)
-                
-        else: # if current cost is lower than past cost set the counter to zero and update the past cost value
-            epoch_since_improved = 0 
-            learning_rate /= 10
-            past_cost = current_cost
-            print("current cost is lower")
     
     return w, b
     
@@ -255,7 +249,8 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
     return loss
 
 def main():
-    print(train_age_regressor(num_of_epochs=300, size_of_batch=10, ttv_val=1, the_set=0, learning_rate=0.001, reg_bool=False))
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    print(train_age_regressor(num_of_epochs=100, size_of_batch=500, ttv_val=1, the_set=0, learning_rate=0.01, reg_bool=False))
 
 if __name__ == '__main__':
     main()

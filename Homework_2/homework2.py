@@ -187,17 +187,18 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
 def find_lowest_loss(x, y, learning_rate, num_of_epochs, size_of_batch, reg_bool = True):
     size_of_dataset = len(y)
     l = np.expand_dims(a=y, axis=-1)
-    w_shape = (x.shape[1], l.shape[1]) #2304 x 1
-    w = np.random.rand(*w_shape) * np.sqrt(1/(x.shape[1] + l.shape[1])) #set intial w value based off Xavier intilization
+    w_shape = (x.shape[1]) #2304 x 1
+    w = np.random.rand(w_shape) * np.sqrt(1/(x.shape[1] + l.shape[1])) #set intial w value based off Xavier intilization
     b = np.random.rand(l.shape[1]) #set initial bias value 
     reg = l2(w, y) # set regularized term
     w_new, b_new = stochastic_gradient_descent(x, y, b, w, learning_rate, num_of_epochs, size_of_batch, size_of_dataset, reg_bool)
-    loss = train_valid_test(x, w, b, y, reg, reg_bool)
+    return w_new, b_new
+    #loss = train_valid_test(x, w, b, y, reg, reg_bool)
 
 
 def train_valid_test(x, w, b, y, reg: float, reg_bool: bool = False):
     y_hat = model(x, w, b)
-    if reg_bool:
+    if reg_bool == True:
         train_or_validation = regularized_mean_square_error(y, y_hat, reg)
         test = regularized_mean_square_error(y, y_hat, reg)
     else:
@@ -209,7 +210,7 @@ def train_valid_test(x, w, b, y, reg: float, reg_bool: bool = False):
 
 def load_data():
     #training set
-    x_tr = np.reshape(np.load("age_regression_Xtr.npy"), (-1, 48*48))
+    x_tr = np.reshape(np.load("age_regression_Xtr.npy"), (-1, 48*48)) #2304 x 1
     y_tr = np.load("age_regression_ytr.npy")
 
     #testing set
@@ -217,6 +218,13 @@ def load_data():
     y_te = np.load("age_regression_yte.npy")
 
     return x_tr, y_tr, x_te, y_te
+
+
+def load_random_data():
+    x = np.random.rand(500, 1)
+    y = 4 * x + 3 + np.random.rand(500, 1)
+
+    return x, y 
 
 
 #Function Arguments:
@@ -228,6 +236,8 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
     # Load data
     x_tr, y_tr, x_te, y_te = load_data()
 
+    x_rand, y_rand = load_random_data()
+
     if ttv_val == 0:
         print("I made this before I realized train/test split is already given to you")
 
@@ -236,7 +246,7 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
 
     loss = 1000000000
     if the_set == 0: #training set
-        loss = find_lowest_loss(x_tr, y_tr, learning_rate, num_of_epochs, size_of_batch, reg_bool)
+        loss = find_lowest_loss(x_rand, y_rand, learning_rate, num_of_epochs, size_of_batch, reg_bool)
     elif the_set == 1: #validation set
         loss = find_lowest_loss(x_val, y_val, learning_rate, num_of_epochs, size_of_batch, reg_bool)
     elif the_set == 2: #test set
@@ -249,7 +259,9 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
 
 def main():
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    print(train_age_regressor(num_of_epochs=100, size_of_batch=10, ttv_val=1, the_set=0, learning_rate=0.01, reg_bool=False))
+    w_global, b_global = train_age_regressor(num_of_epochs=100, size_of_batch=5000, ttv_val=1, the_set=0, learning_rate=0.01, reg_bool=False)
+    w_batch, b_batch = train_age_regressor(num_of_epochs=100, size_of_batch=10, ttv_val=1, the_set=0, learning_rate=0.01, reg_bool=False)
+    print(np.sum(np.square(w_global - w_batch)))
 
 if __name__ == '__main__':
     main()

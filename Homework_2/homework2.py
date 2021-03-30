@@ -232,6 +232,7 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
 
 	loss = 1000000000
 	w_trained, b_trained = find_lowest_loss(x_tr, y_tr, learning_rate, num_of_epochs, size_of_batch, reg_bool, alpha)
+	#TODO make grid search function
 	if the_set == 0: #perform test using weights and biases from training set on test set, thus getting loss on test set
 		reg = l2(w_trained, y_te)
 		loss = train_valid_test(x_te, w_trained, b_trained, y_te, reg, reg_bool)

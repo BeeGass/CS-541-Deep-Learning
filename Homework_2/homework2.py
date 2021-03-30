@@ -94,7 +94,7 @@ def random_test_validation_split(x, y, train_perc = 0.8):
 #epsilon is the learning rate
 #alpha is the regularized term
 #reg_bool if you wish to use the regularized term
-def gradient_descent(x, y, b, w, learning_rate, reg_bool):
+def gradient_descent(x, y, b, w, learning_rate, reg_bool, alpha = 0.1):
 	# batch_size x 2304
 	X_t = x.T # 2304 x batch_size
 	n = y.shape[0]
@@ -103,7 +103,7 @@ def gradient_descent(x, y, b, w, learning_rate, reg_bool):
 	#taking derivative 
 	# 2304 x 1 
 	derivative_of_w = (1/n) * X_t.dot(y_hat - y)
-	derivative_of_b = (1/n) * (y_hat - y)
+	derivative_of_b = (1/n) * np.sum(y_hat - y)
 
 	# if regularized term is wanted then add that to the derivative with respect to w
 	if reg_bool == True:
@@ -147,7 +147,7 @@ def batch_iterator(x, y, size_of_batch):
 		yield x_rand[i:i + size_of_batch], y_rand[i:i + size_of_batch]
 
 
-def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs: int, size_of_batch: int, size_of_dataset: int, reg_bool: bool = True):
+def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs: int, size_of_batch: int, size_of_dataset: int, reg_bool: bool = True, alpha = 0.1):
 	past_cost = 1e100
 	current_cost = -1
 	epochs_since_improved = 0
@@ -166,34 +166,32 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
 			else:
 				current_cost = mean_square_error(y_hat, mini_batch_y)
 				
-			w, b = gradient_descent(mini_batch_x, mini_batch_y, b, w, learning_rate, reg_bool)
+			w, b = gradient_descent(mini_batch_x, mini_batch_y, b, w, learning_rate, reg_bool, alpha)
 
 		entire_dataset = mean_square_error(model(x, w, b), y)
 		print("MSE: ", entire_dataset)
 		
 	return w, b 
 
-def find_lowest_loss(x, y, learning_rate, num_of_epochs, size_of_batch, reg_bool = True):
+def find_lowest_loss(x, y, learning_rate, num_of_epochs, size_of_batch, reg_bool = True, alpha = 0.1):
 	size_of_dataset = len(y)
 	l = np.expand_dims(a=y, axis=-1)
 	w_shape = (x.shape[1]) #2304 x 1
 	w = np.random.rand(w_shape) * np.sqrt(1/(x.shape[1] + l.shape[1])) #set intial w value based off Xavier intilization
 	b = np.random.rand(l.shape[1]) #set initial bias value
 	reg = l2(w, y) # set regularized term
-	w_new, b_new = stochastic_gradient_descent(x, y, b, w, learning_rate, num_of_epochs, size_of_batch, size_of_dataset, reg_bool)
+	w_new, b_new = stochastic_gradient_descent(x, y, b, w, learning_rate, num_of_epochs, size_of_batch, size_of_dataset, reg_bool, alpha)
 	return w_new, b_new
 
 
 def train_valid_test(x, w, b, y, reg: float, reg_bool: bool = False):
 	y_hat = model(x, w, b)
 	if reg_bool == True:
-		train_or_validation = regularized_mean_square_error(y, y_hat, reg)
-		test = regularized_mean_square_error(y, y_hat, reg)
+		validation_or_test = regularized_mean_square_error(y, y_hat, reg)
 	else:
-		train_or_validation = mean_square_error(y_hat, y)
-		test = mean_square_error(y_hat, y)
+		validation_or_test = mean_square_error(y_hat, y)
 
-	return train_or_validation, test
+	return validation_or_test
 
 
 def load_data():
@@ -220,7 +218,7 @@ def load_random_data():
 #alpha is the value for regularization, if used, default is 0.0
 #ttv_val is the value associated with the type of split wanted. A Train/Test Split is 0, and a train/validation/split is 1, No Split Needed is 2. Default is 2
 #learning rate is the hyperparameter associated with the gradient descent
-def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2, the_set: int = 0, learning_rate: float = 0.1, reg_bool = False):
+def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2, the_set: int = 0, learning_rate: float = 0.1, reg_bool = False, alpha = 0.1):
 	# Load data
 	x_tr, y_tr, x_te, y_te = load_data()
 
@@ -233,16 +231,34 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
 		x_val, y_val, x_te, y_te = random_test_validation_split(x_te, y_te, train_perc = 0.8)
 
 	loss = 1000000000
-	if the_set == 0: #training set
-		w_trained, b_trained = find_lowest_loss(x_tr, y_tr, learning_rate, num_of_epochs, size_of_batch, reg_bool)
+	w_trained, b_trained = find_lowest_loss(x_tr, y_tr, learning_rate, num_of_epochs, size_of_batch, reg_bool, alpha)
+	if the_set == 0: #perform test using weights and biases from training set on test set, thus getting loss on test set
+		reg = l2(w_trained, y_te)
+		loss = train_valid_test(x_te, w_trained, b_trained, y_te, reg, reg_bool)
+		print("train/test loss: ", loss)
+
+	elif the_set == 1 or the_set == 2: #perform test using weights and biases from training set on validation set, thus getting loss on validation set. If set "the_set" is set to 2 then apply weights and biases to test set
+		reg = l2(w_trained, y_val)
+		loss = train_valid_test(x_val, w_trained, b_trained, y_val, reg, reg_bool)
+		print("train/validation loss: ", loss)
+
+		if the_set == 2: #perform test 
+			reg = l2(w_trained, y_te)
+			loss = train_valid_test(x_te, w_trained, b_trained, y_te, reg, reg_bool)
+			print("train/validation/test loss: ", loss)
+	else:
+		print("you picked an incorrect the_set value")
+
+	
 
 	return w_trained, b_trained
 
 
 def main():
 	os.chdir(os.path.dirname(os.path.abspath(__file__)))
-	#w_global, b_global = train_age_regressor(num_of_epochs=100, size_of_batch=5000, ttv_val=1, the_set=0, learning_rate=0.001, reg_bool=False)
-	w_batch, b_batch = train_age_regressor(num_of_epochs=100, size_of_batch=20, ttv_val=1, the_set=0, learning_rate=0.001, reg_bool=False)
+	w_global, b_global = train_age_regressor(num_of_epochs=100, size_of_batch=5000, ttv_val=1, the_set=2, learning_rate=0.001, reg_bool=False, alpha = 0.1)
+	print("batch based SGD")
+	w_batch, b_batch = train_age_regressor(num_of_epochs=100, size_of_batch=20, ttv_val=1, the_set=2, learning_rate=0.001, reg_bool=False, alpha = 0.1)
 	#print(np.sum(np.square(w_global - w_batch)))
 
 if __name__ == '__main__':

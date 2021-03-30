@@ -168,8 +168,10 @@ def stochastic_gradient_descent(x, y, b, w, learning_rate: float, num_of_epochs:
 				
 			w, b = gradient_descent(mini_batch_x, mini_batch_y, b, w, learning_rate, reg_bool, alpha)
 
-		entire_dataset = mean_square_error(model(x, w, b), y)
-		print("MSE: ", entire_dataset)
+		entire_dataset_mse = mean_square_error(model(x, w, b), y)
+		if math.isnan(entire_dataset_mse):
+			break
+		#print("MSE: ", entire_dataset)
 		
 	return w, b 
 
@@ -212,13 +214,25 @@ def load_random_data():
 
 	return x, y 
 
+def grid_search():
+	hyperparameters = {
+		"learning_rate": [0.01, 0.001, 0.0001],
+		"num_of_epochs": [100, 200, 300, 400, 500, 600],
+		"size_of_batch": [1, 10, 50, 100, 200, 5000],
+		"alpha": [0.9, 0.5, 0.1]	
+	}
+	for i in range(len(hyperparameters["num_of_epochs"])):
+		for j in range(len(hyperparameters["size_of_batch"])):
+			for k in range(len(hyperparameters["learning_rate"])):
+				for l in range(len(hyperparameters["alpha"])):
+						yield hyperparameters["learning_rate"][k], hyperparameters["num_of_epochs"][i], hyperparameters["size_of_batch"][j], hyperparameters["alpha"][l]
 
 #Function Arguments:
 #mse_bool is the boolean value that determines if mse will be performed without or with regularization, default is True
 #alpha is the value for regularization, if used, default is 0.0
 #ttv_val is the value associated with the type of split wanted. A Train/Test Split is 0, and a train/validation/split is 1, No Split Needed is 2. Default is 2
 #learning rate is the hyperparameter associated with the gradient descent
-def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2, the_set: int = 0, learning_rate: float = 0.1, reg_bool = False, alpha = 0.1):
+def train_age_regressor(ttv_val: int = 2, the_set: int = 0, reg_bool = False):
 	# Load data
 	x_tr, y_tr, x_te, y_te = load_data()
 
@@ -230,36 +244,68 @@ def train_age_regressor(num_of_epochs: int, size_of_batch: int, ttv_val: int = 2
 	elif ttv_val == 1:
 		x_val, y_val, x_te, y_te = random_test_validation_split(x_te, y_te, train_perc = 0.8)
 
-	loss = 1000000000
-	w_trained, b_trained = find_lowest_loss(x_tr, y_tr, learning_rate, num_of_epochs, size_of_batch, reg_bool, alpha)
-	#TODO make grid search function
-	if the_set == 0: #perform test using weights and biases from training set on test set, thus getting loss on test set
-		reg = l2(w_trained, y_te)
-		loss = train_valid_test(x_te, w_trained, b_trained, y_te, reg, reg_bool)
-		print("train/test loss: ", loss)
+	
+	best_loss = 1000000000
+	best_learning_rate = -1
+	best_num_of_epoch = -1
+	best_size_of_batch = -1
+	best_alpha = -1
+	for learning_rate, num_of_epochs, size_of_batch, alpha in grid_search():
 
-	elif the_set == 1 or the_set == 2: #perform test using weights and biases from training set on validation set, thus getting loss on validation set. If set "the_set" is set to 2 then apply weights and biases to test set
-		reg = l2(w_trained, y_val)
-		loss = train_valid_test(x_val, w_trained, b_trained, y_val, reg, reg_bool)
-		print("train/validation loss: ", loss)
+		w_trained, b_trained = find_lowest_loss(x_tr, y_tr, learning_rate, num_of_epochs, size_of_batch, reg_bool, alpha)
+		reg = l2(w_trained, y_tr)
+		check_loss = train_valid_test(x_te, w_trained, b_trained, y_te, reg, reg_bool)
 
-		if the_set == 2: #perform test 
+		if math.isnan(check_loss):
+			continue
+
+		if the_set == 0: #perform test using weights and biases from training set on test set, thus getting loss on test set
 			reg = l2(w_trained, y_te)
 			loss = train_valid_test(x_te, w_trained, b_trained, y_te, reg, reg_bool)
-			print("train/validation/test loss: ", loss)
-	else:
-		print("you picked an incorrect the_set value")
+			print("train/test loss: ", loss)
 
-	
+		elif the_set == 1: #perform test using weights and biases from training set on validation set, thus getting loss on validation set.
+			reg = l2(w_trained, y_val)
+			loss = train_valid_test(x_val, w_trained, b_trained, y_val, reg, reg_bool)
+			print("train/validation loss: ", loss)
+
+			if loss < best_loss:
+				best_loss = loss
+				best_learning_rate = learning_rate
+				best_num_of_epoch = num_of_epochs
+				best_size_of_batch = size_of_batch
+				best_alpha = alpha
+
+		else:
+			print("you picked an incorrect the_set value")
+
+	reg = l2(w_trained, y_te)
+	loss = train_valid_test(x_te, w_trained, b_trained, y_te, reg, reg_bool)
+	print("\n---------------------------------------------------------------------------------------------------------------------------------------------------------")
+	print("train/validation/test loss: ", loss)
+	print("reg_bool: ", reg_bool)
+	print("best_loss: ", best_loss)
+	print("best_learning_rate: ", best_learning_rate)
+	print("best_num_of_epoch: ", best_num_of_epoch)
+	print("best_size_of_batch: ", best_size_of_batch)
+	print("best_alpha: ", best_alpha)
+	print("--------------------------------------------------------------------------------------------------------------------------------------------------------- \n")
 
 	return w_trained, b_trained
 
 
 def main():
 	os.chdir(os.path.dirname(os.path.abspath(__file__)))
-	w_global, b_global = train_age_regressor(num_of_epochs=100, size_of_batch=5000, ttv_val=1, the_set=2, learning_rate=0.001, reg_bool=False, alpha = 0.1)
+
+	print("global based SGD using regularization")
+	w_global, b_global = train_age_regressor(ttv_val = 1, the_set = 1, reg_bool = True)
+	print("batch based SGD using regularization")
+	w_batch, b_batch = train_age_regressor(ttv_val = 1, the_set = 1, reg_bool = True)
+
+	print("global based SGD")
+	w_global, b_global = train_age_regressor(ttv_val = 1, the_set = 1, reg_bool = False)
 	print("batch based SGD")
-	w_batch, b_batch = train_age_regressor(num_of_epochs=100, size_of_batch=20, ttv_val=1, the_set=2, learning_rate=0.001, reg_bool=False, alpha = 0.1)
+	w_batch, b_batch = train_age_regressor(ttv_val = 1, the_set = 1, reg_bool = False)
 	#print(np.sum(np.square(w_global - w_batch)))
 
 if __name__ == '__main__':

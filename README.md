@@ -5,6 +5,19 @@ Recommended Additional Textbook:
  - Dive Into Deep Learning
  - Pattern Recognition and Machine Learning
 
+Reading 1:
+ - Chapters 1 In Deep Learning Book
+ - Chapters 2 In Deep Learning Book
+ - Chapters 5 In Deep Learning Book
+
+Reading 2: 
+ - Chapters 3 In Deep Learning Book
+ - Chapters 6 In Deep Learning Book
+
+Reading 3:
+ - (Auto-Encoding Variational Bayes Paper)[https://arxiv.org/pdf/1312.6114.pdf]
+ - (Tutorial on Variational Autoencoders)[https://arxiv.org/pdf/1606.05908.pdf%20http://arxiv.org/abs/1606.05908.pdf]
+
 
 
 | Deep Learning Resources: |

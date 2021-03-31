@@ -3,6 +3,7 @@ Course Textbook: Deep Learning Book
 
 Recommended Additional Textbook: 
  - Dive Into Deep Learning
+ - Deep Learning Book
  - Pattern Recognition and Machine Learning
 
 Reading 1:

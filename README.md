@@ -2,9 +2,9 @@
 Course Textbook: Deep Learning Book 
 
 Recommended Additional Textbook: 
- - Dive Into Deep Learning
- - Deep Learning Book
- - Pattern Recognition and Machine Learning
+ - [Dive Into Deep Learning](https://d2l.ai/d2l-en.pdf)
+ - [Deep Learning Book](https://www.deeplearningbook.org/)
+ - [Pattern Recognition and Machine Learning](http://users.isr.ist.utl.pt/~wurmd/Livros/school/Bishop%20-%20Pattern%20Recognition%20And%20Machine%20Learning%20-%20Springer%20%202006.pdf)
 
 Reading 1:
  - Chapters 1 In Deep Learning Book

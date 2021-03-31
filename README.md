@@ -15,8 +15,8 @@ Reading 2:
  - Chapters 6 In Deep Learning Book
 
 Reading 3:
- - (Auto-Encoding Variational Bayes Paper)[https://arxiv.org/pdf/1312.6114.pdf]
- - (Tutorial on Variational Autoencoders)[https://arxiv.org/pdf/1606.05908.pdf%20http://arxiv.org/abs/1606.05908.pdf]
+ - [Auto-Encoding Variational Bayes Paper](https://arxiv.org/pdf/1312.6114.pdf)
+ - [Tutorial on Variational Autoencoders](https://arxiv.org/pdf/1606.05908.pdf%20http://arxiv.org/abs/1606.05908.pdf)
 
 
 

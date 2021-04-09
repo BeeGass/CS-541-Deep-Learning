@@ -27,7 +27,8 @@ Generic Readings That Should Be Done As You Need
 
 
 | Deep Learning Resources: |
-|-| [Awesome Pytorch tutorial to learn Pytorch from](https://jovian.ai/aakashns/01-pytorch-basics) |
+|-
+| [Awesome Pytorch tutorial to learn Pytorch from](https://jovian.ai/aakashns/01-pytorch-basics) |
 | [Neural Network From Scratch](https://drscotthawley.github.io/blog/2019/01/30/My-First-Neural-Network.html) |
 | [Little textbook on Neural Networks](https://minitorch.github.io/) |
 | [Pytorch Classifier](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html) |

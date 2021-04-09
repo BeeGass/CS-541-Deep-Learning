@@ -14,7 +14,7 @@ Reading 1:
 Reading 2: 
  - Chapters 3 In Deep Learning Book
  - Chapters 6 In Deep Learning Book
- Additional Helpful Reading 
+ - Additional Helpful Reading 
    - [From Autoencoder to Beta-VAE](https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html)
 
 Reading 3:

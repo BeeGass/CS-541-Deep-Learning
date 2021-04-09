@@ -19,10 +19,15 @@ Reading 3:
  - [Auto-Encoding Variational Bayes Paper](https://arxiv.org/pdf/1312.6114.pdf)
  - [Tutorial on Variational Autoencoders](https://arxiv.org/pdf/1606.05908.pdf%20http://arxiv.org/abs/1606.05908.pdf)
 
+Generic Readings That Should Be Done As You Need
+ - [Fashion-MNIST with tf.Keras](https://medium.com/tensorflow/hello-deep-learning-fashion-mnist-with-keras-50fcff8cd74a)
+ - [Understanding LSTM Networks](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)
+ - [Derivation Of Softmax Function](https://mmuratarat.github.io/2019-01-27/derivation-of-softmax-function)
+
 
 
 | Deep Learning Resources: |
-|-|
+|-| [Awesome Pytorch tutorial to learn Pytorch from](https://jovian.ai/aakashns/01-pytorch-basics) |
 | [Neural Network From Scratch](https://drscotthawley.github.io/blog/2019/01/30/My-First-Neural-Network.html) |
 | [Little textbook on Neural Networks](https://minitorch.github.io/) |
 | [Pytorch Classifier](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html) |
